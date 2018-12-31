@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/olivere/elastic"
 	"log"
+	"os"
 	"time"
 )
 
@@ -63,6 +64,7 @@ func Init(elasticUrl, elasticIndex, elasticType, app string) error {
 
 func Panic(msg string) {
 	write(_panic, msg)
+	os.Exit(1)
 }
 
 func Fatal(msg string) {
@@ -86,6 +88,7 @@ func Debug(msg string) {
 }
 
 func write(severity, msg string) {
+	fmt.Println(fmt.Sprintf("[%s]\t[%s]\t:%s", time.Now().Format("2006-01-02 15:04:05"), severity, msg))
 	lm := logMessage{
 		Severity:    severity,
 		Message:     msg,
@@ -104,7 +107,6 @@ func write(severity, msg string) {
 }
 
 func (e elasticLog) Write(p []byte) (int, error) {
-	fmt.Println(string(p))
 	ctx := context.Background()
 	_, err := e.client.Index().
 		Index(e.elasticIndex).
@@ -113,7 +115,6 @@ func (e elasticLog) Write(p []byte) (int, error) {
 		Do(ctx)
 
 	if err != nil {
-		fmt.Println(err)
 		return 0, err
 	}
 
