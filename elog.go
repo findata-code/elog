@@ -15,7 +15,6 @@ type elasticLog struct {
 	elasticIndex string
 	elasticType  string
 	app          string
-	logBuffer    []logMessage
 }
 
 type logMessage struct {
