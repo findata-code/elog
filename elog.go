@@ -16,6 +16,7 @@ type elasticLog struct {
 	elasticIndex string
 	elasticType  string
 	app          string
+	version      string
 }
 
 type logMessage struct {
@@ -23,6 +24,7 @@ type logMessage struct {
 	Message     string
 	Timestamp   time.Time
 	Application string
+	Version     string
 }
 
 var (
@@ -36,7 +38,7 @@ var (
 
 var instance elasticLog
 
-func Init(elasticUrl, elasticIndex, elasticType, app string) error {
+func Init(elasticUrl, elasticIndex, elasticType, app, version string) error {
 
 	client, err := elastic.NewClient(
 		elastic.SetURL(elasticUrl),
@@ -54,7 +56,8 @@ func Init(elasticUrl, elasticIndex, elasticType, app string) error {
 		elasticUrl:   elasticUrl,
 		elasticIndex: elasticIndex,
 		elasticType:  elasticType,
-		app:app,
+		app:          app,
+		version:      version,
 	}
 
 	log.SetOutput(instance)
@@ -94,6 +97,7 @@ func write(severity, msg string) {
 		Message:     msg,
 		Timestamp:   time.Now(),
 		Application: instance.app,
+		Version: instance.version,
 	}
 
 	b, err := json.Marshal(lm)
