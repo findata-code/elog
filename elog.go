@@ -65,36 +65,50 @@ func Init(elasticUrl, elasticIndex, elasticType, app, version string) error {
 	return nil
 }
 
-func Panic(msg string) {
+func Panic(msg interface{}) {
 	write(_panic, msg)
 	os.Exit(1)
 }
 
-func Fatal(msg string) {
+func Fatal(msg interface{}) {
 	write(_fatal, msg)
 }
 
-func Error(msg string) {
+func Error(msg interface{}) {
 	write(_error, msg)
 }
 
-func Warning(msg string) {
+func Warning(msg interface{}) {
 	write(_warning, msg)
 }
 
-func Info(msg string) {
+func Info(msg interface{}) {
 	write(_info, msg)
 }
 
-func Debug(msg string) {
+func Debug(msg interface{}) {
 	write(_debug, msg)
 }
 
-func write(severity, msg string) {
+func write(severity string, msg interface{}) {
+	var stringMessage string
+	switch msg.(type){
+	case string:
+		stringMessage = msg.(string)
+	default:
+		b, err := json.Marshal(stringMessage)
+		if err != nil {
+			write(_error, "Elog: Could not parse messager to json")
+			return
+		}
+
+		stringMessage = string(b)
+	}
+
 	fmt.Println(fmt.Sprintf("[%s]\t[%s]\t:%s", time.Now().Format("2006-01-02 15:04:05"), severity, msg))
 	lm := logMessage{
 		Severity:    severity,
-		Message:     msg,
+		Message:     stringMessage,
 		Timestamp:   time.Now(),
 		Application: instance.app,
 		Version: instance.version,
