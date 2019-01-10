@@ -8,8 +8,9 @@ Publish log to elasticsearch
 * param2: index
 * param3: doc type
 * param4: application name
+* param5: software version
 */
-elog.Init("http://127.0.0.1:9200", "log", "doc", "web.app")
+elog.Init("http://127.0.0.1:9200", "log", "doc", "web.app", "1.0")
 
 /*
 * Panic
@@ -31,9 +32,10 @@ elog.Debug("Writing log")
 Example log data
 ```json
 {
-   "Severity": "info",
-   "Message": "Starting Balance Calculator",
-   "Timestamp": "2018-12-31T18:13:57.925186+07:00",
-   "Application": "balance.calculator"
+    "Severity": "info",
+    "Message": "GET /",
+    "Timestamp": "2019-01-05T18:25:34.566485073Z",
+    "Application": "line-messaging",
+    "Version": "0.0.5"
 }
 ``` 
